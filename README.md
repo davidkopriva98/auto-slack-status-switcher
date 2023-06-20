@@ -1,0 +1,2 @@
+# auto-slack-status-switcher
+ 
