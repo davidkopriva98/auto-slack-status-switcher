@@ -5,6 +5,7 @@
 
 
 function UpdateStatus {
+    Write-Host "Updating Slack status"
     $payload = @{
         "profile" = @{
             "status_text" = $newStatusText
@@ -22,6 +23,29 @@ function UpdateStatus {
     } else {
         Write-Host "Failed to update Slack status. Error: $($response.error)"
     }
+}
+
+function GetStatus {
+    Write-Host "Getting slack status for user: $userID"
+
+    $apiUrl = "https://slack.com/api/users.profile.get?user=$userID"
+    $response = Invoke-RestMethod -Uri $apiUrl -Headers @{
+        "Authorization" = "Bearer $accessToken"
+        "Content-Type" = "application/x-www-form-urlencoded"
+    }
+
+    if ($response.ok) {
+        $statusEmoji = $response.profile.status_emoji
+        $statusMessage = $response.profile.status_text
+        #Write-Host "Status emoji: $statusEmoji and status message: $statusMessage"
+
+        return ![string]::IsNullOrEmpty($statusMessage) -or ![string]::IsNullOrEmpty($statusEmoji)
+    }
+    else {
+        Write-Host "Error: $($response.error)"
+        return true
+    }
+
 }
 
 $envFilePath = Join-Path -Path $PSScriptRoot -ChildPath ".env"
@@ -70,11 +94,18 @@ if ($wifiName -eq $homeWifiName) {
 
 
 $currentHour = (Get-Date).Hour
+$isCurrentlyStatusSet = GetStatus
 
-if ($currentHour -ge 5 -and $currentHour -lt 8) {
+if ($currentHour -ge 5 -and $currentHour -lt 8 -and -not $isCurrentlyStatusSet) {
     UpdateStatus
 } else {
-    $buttonClicked = Read-MessageBoxDialog -Message "Do you want to update Slack status?" -WindowTitle "Update Slack status?" -Buttons YesNo -Icon Exclamation
+
+    if ($isCurrentlyStatusSet) {
+        $buttonClicked = Read-MessageBoxDialog -Message "Slack status is already set. Do you wish to override this?" -WindowTitle "Update Slack status?" -Buttons YesNo -Icon Exclamation
+    } else {
+        $buttonClicked = Read-MessageBoxDialog -Message "Do you want to update Slack status? Current time is outside of comming to work hours." -WindowTitle "Update Slack status?" -Buttons YesNo -Icon Exclamation        
+    }
+
     if ($buttonClicked -eq "Yes") { 
         UpdateStatus
     }
