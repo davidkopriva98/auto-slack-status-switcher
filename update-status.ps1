@@ -96,7 +96,7 @@ if ($wifiName -eq $homeWifiName) {
 $currentHour = (Get-Date).Hour
 $isCurrentlyStatusSet = GetStatus
 
-if ($currentHour -ge 5 -and $currentHour -lt 8 -and -not $isCurrentlyStatusSet) {
+if ($currentHour -ge $commingToWorkStart -and $currentHour -lt $commingToWorkEnd -and -not $isCurrentlyStatusSet) {
     UpdateStatus
 } else {
 
