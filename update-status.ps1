@@ -64,6 +64,8 @@ foreach ($envVariable in $envVariables) {
     }
 }
 
+$currentTime = Get-Date -Format "dd/MM/yyyy HH:mm"
+Write-Host "Current datetime: $currentTime"
 
 $homeWifiName = "Error 404"
 
@@ -92,6 +94,7 @@ if ($wifiName -eq $homeWifiName) {
     $newStatusEmoji = $officeStatusEmoji
 } else {
     Write-Host "Wi-Fi not recognised."
+	Write-Host ('-'*20)
     return
 }
 
@@ -111,8 +114,10 @@ if ($currentHour -ge $commingToWorkStart -and $currentHour -lt $commingToWorkEnd
 
     if ($buttonClicked -eq "Yes") { 
         UpdateStatus
+		Write-Host ('-'*20)
     }
     else { 
         Write-Host 'Ok, bye.'
+		Write-Host ('-'*20)
     }
 }
