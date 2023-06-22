@@ -13,7 +13,11 @@ commingToWorkEnd=<<TimeframeWhenStatusUpdateOccurrsAutomatically>>
 
 ## Usage
 
-Put a shortcut of ps1 file in your Start-up folder. (Win + R; type shell:startup).
+Navigate to Windows Start-up folder. Press ```Win + R``` and type ```shell:startup```. Inside this folder create a new ```<<someFileName>>.cmd``` file.
+```bash
+powerShell -windowstyle hidden C:<<pathToFile>>\update-status.ps1 >> C:<<pathToDesiredLogsLocation>>\autorun.log
+```
+Restart the PC and observe the code in action.
 
 ## Contributing
 
