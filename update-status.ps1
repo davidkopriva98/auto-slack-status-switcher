@@ -9,10 +9,20 @@ function Read-MessageBoxDialog([string]$Message, [string]$WindowTitle, [System.W
 
 function UpdateStatus {
     Write-Host "Updating Slack status"
+
+
+    $dateTime = Get-Date
+    $localTimeZone = Get-TimeZone
+
+    $endOfDay=[DateTime]::Today.AddDays(1).AddSeconds(-1).AddSeconds($localTimeZone.GetUtcOffset($dateTime).TotalSeconds * -1)
+    $endOfDayEpoch = Get-Date $endOfDay -UFormat %s
+
+
     $payload = @{
         "profile" = @{
             "status_text" = $newStatusText
             "status_emoji" = $newStatusEmoji
+            "status_expiration" = $endOfDayEpoch
         }
     } | ConvertTo-Json
 
@@ -83,7 +93,7 @@ $officeStatusText = "Office"
 $officeStatusEmoji = ":office:"
 
 $homeStatusText = "Working remotely"
-$homeStatusEmoji = ":home:"
+$homeStatusEmoji = ":house_with_garden:"
 
 
 if ($wifiName -eq $homeWifiName) {
