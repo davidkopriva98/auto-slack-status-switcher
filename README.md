@@ -1,4 +1,4 @@
-# auto-slack-status-switcher
+# ![App logo](/icon.ico?raw=true "App logo") Automatic Slack status
  
 ## Prerequisite
 
